@@ -1,0 +1,17 @@
+{
+  "title": "Hundred Chart",
+  "units": "U",
+  "unitsFull": "Units",
+  "tens": "D",
+  "tensFull": "Tens",
+  "hundreds": "C",
+  "hundredsFull": "Hundreds",
+  "reset": "Reset",
+  "music": "🎵 Music",
+  "sfx": "🔔 Buttons",
+  "lang": "Language",
+  "centerHint": "Number",
+  "help": "Walk 1–1000 with the arrows",
+  "pageHome": "1–100",
+  "range": "Chart"
+}

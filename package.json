@@ -1,0 +1,49 @@
+{
+  "name": "abn",
+  "version": "1.0.0",
+  "description": "ABN — walk the number chart (1–1000)",
+  "main": "electron/main.js",
+  "author": "ABN",
+  "license": "MIT",
+  "scripts": {
+    "start": "electron .",
+    "dist:linux": "electron-builder --linux AppImage",
+    "dist:win": "electron-builder --win portable",
+    "dist": "electron-builder --linux AppImage --win portable"
+  },
+  "build": {
+    "appId": "com.abn.app",
+    "productName": "ABN",
+    "directories": {
+      "output": "dist",
+      "buildResources": "build"
+    },
+    "files": [
+      "app/**/*",
+      "electron/**/*",
+      "package.json"
+    ],
+    "icon": "build/icon.png",
+    "linux": {
+      "target": [
+        "AppImage"
+      ],
+      "category": "Education",
+      "icon": "build/icon.png",
+      "artifactName": "ABN-${version}-linux.${ext}"
+    },
+    "win": {
+      "target": [
+        "portable"
+      ],
+      "icon": "build/icon.ico",
+      "artifactName": "ABN-${version}-windows.${ext}",
+      "signAndEditExecutable": false
+    }
+  },
+  "devDependencies": {
+    "electron": "^33.2.0",
+    "electron-builder": "^25.1.8",
+    "png-to-ico": "^3.0.2"
+  }
+}

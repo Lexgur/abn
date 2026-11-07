@@ -1,0 +1,17 @@
+{
+  "title": "Tabla del 100",
+  "units": "U",
+  "unitsFull": "Unidades",
+  "tens": "D",
+  "tensFull": "Decenas",
+  "hundreds": "C",
+  "hundredsFull": "Cientos",
+  "reset": "Reiniciar",
+  "music": "🎵 Música",
+  "sfx": "🔔 Botones",
+  "lang": "Idioma",
+  "centerHint": "Número",
+  "help": "Camina 1–1000 con las flechas",
+  "pageHome": "1–100",
+  "range": "Tabla"
+}

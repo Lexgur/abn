@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>ABN</title>
+  <link rel="icon" href="img/logo.png" />
+  <link rel="stylesheet" href="css/app.css" />
+</head>
+<body>
+  <div class="app">
+    <header class="top">
+      <div class="title-block">
+        <div class="brand">
+          <img class="logo" src="img/logo.png" width="48" height="48" alt="ABN" />
+          <h1 data-i18n="title">Tabla del 100</h1>
+        </div>
+        <p class="help" data-i18n="help">Camina 1–1000 con las flechas</p>
+      </div>
+      <div class="top-controls">
+        <label class="lang-wrap">
+          <span data-i18n="lang">Idioma</span>
+          <select id="lang" aria-label="Language">
+            <option value="es">Español</option>
+            <option value="en">English</option>
+            <option value="lt">Lietuvių</option>
+          </select>
+        </label>
+        <label class="vol">
+          <span data-i18n="music">🎵</span>
+          <input id="musicVol" type="range" min="0" max="100" step="5" value="70" />
+          <span id="musicVolPct" class="vol-pct">70%</span>
+        </label>
+        <label class="vol">
+          <span data-i18n="sfx">🔔</span>
+          <input id="sfxVol" type="range" min="0" max="100" step="5" value="55" />
+          <span id="sfxVolPct" class="vol-pct">55%</span>
+        </label>
+      </div>
+    </header>
+
+    <main class="stage">
+      <section class="board-wrap">
+        <div class="board-bar">
+          <span class="page-label"><span data-i18n="range">Tabla</span> <strong id="pageRange">1–100</strong></span>
+          <div class="page-actions">
+            <button type="button" id="pageHome" class="btn soft" data-i18n="pageHome">1–100</button>
+            <button type="button" id="pagePrev" class="btn soft" title="-100">−100</button>
+            <button type="button" id="pageNext" class="btn soft" title="+100">+100</button>
+          </div>
+        </div>
+        <div id="board" class="board" role="grid" aria-label="Tabla"></div>
+      </section>
+
+      <aside class="side">
+        <section class="pad" aria-label="Navigator">
+          <button type="button" class="arrow hundred-up" data-dir="hundred-up" title="−100" aria-label="Hundred up">⇈</button>
+          <button type="button" class="arrow up" data-dir="up" title="↑ −10" aria-label="Up">↑</button>
+          <button type="button" class="arrow left" data-dir="left" title="← −1" aria-label="Left">←</button>
+          <div class="center">
+            <input id="number" type="text" inputmode="numeric" value="1" maxlength="4" autocomplete="off" />
+            <span class="center-hint" data-i18n="centerHint">Número</span>
+          </div>
+          <button type="button" class="arrow right" data-dir="right" title="→ +1" aria-label="Right">→</button>
+          <button type="button" class="arrow down" data-dir="down" title="↓ +10" aria-label="Down">↓</button>
+          <button type="button" class="arrow hundred-down" data-dir="hundred-down" title="+100" aria-label="Hundred down">⇊</button>
+        </section>
+
+        <section class="counters" aria-live="polite">
+          <div class="counter units" title="Unidades">
+            <span class="label" data-i18n="units" data-i18n-title="unitsFull">U</span>
+            <div class="tokens" id="tokensUnits"></div>
+            <span class="value" id="countUnits">0</span>
+          </div>
+          <div class="counter tens" title="Decenas">
+            <span class="label" data-i18n="tens" data-i18n-title="tensFull">D</span>
+            <div class="tokens" id="tokensTens"></div>
+            <span class="value" id="countTens">0</span>
+          </div>
+          <div class="counter hundreds" title="Cientos">
+            <span class="label" data-i18n="hundreds" data-i18n-title="hundredsFull">C</span>
+            <div class="tokens" id="tokensHundreds"></div>
+            <span class="value" id="countHundreds">0</span>
+          </div>
+        </section>
+
+        <button type="button" id="reset" class="btn" data-i18n="reset">Reiniciar</button>
+      </aside>
+    </main>
+  </div>
+  <script src="js/audio.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
