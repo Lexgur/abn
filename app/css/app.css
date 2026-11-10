@@ -349,10 +349,6 @@ select, .btn {
 .dig-d { color: var(--tens); }
 .dig-c { color: var(--hundreds); }
 
-.cell .dig-u,
-.cell .dig-d,
-.cell .dig-c { font-weight: 900; }
-
 .center-hint {
   font-size: 0.75rem;
   font-weight: 800;

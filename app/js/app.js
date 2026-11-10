@@ -127,7 +127,7 @@
       const btn = document.createElement('button');
       btn.type = 'button';
       btn.className = 'cell';
-      setColored(btn, n);
+      btn.textContent = String(n);
       btn.dataset.n = String(n);
       btn.setAttribute('role', 'gridcell');
       btn.addEventListener('click', () => jumpTo(n));
