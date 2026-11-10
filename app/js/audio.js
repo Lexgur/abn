@@ -1,10 +1,10 @@
-/** Soft 8-bit SFX + looping music. Volumes are 0–100 independently. */
+/** Button beeps (Web Audio) + looping CC0 dungeon ambience (OGG). */
 const AudioBus = (() => {
   let ctx = null;
   let master = null;
   let musicGain = null;
   let sfxGain = null;
-  let musicTimer = null;
+  let musicEl = null;
   let musicPct = 70;
   let sfxPct = 55;
   let started = false;
@@ -19,10 +19,9 @@ const AudioBus = (() => {
     'hundred-down': 196,
   };
 
-  // Map UI % → audible gain (music needs more headroom; was too quiet before)
   function musicLevel(pct) {
     const p = Math.max(0, Math.min(100, pct)) / 100;
-    return p * p * 0.95; // curve keeps low % gentle, high % clearly audible
+    return p * 0.9;
   }
 
   function sfxLevel(pct) {
@@ -34,6 +33,7 @@ const AudioBus = (() => {
     if (!musicGain || !sfxGain) return;
     musicGain.gain.value = musicLevel(musicPct);
     sfxGain.gain.value = sfxLevel(sfxPct);
+    if (musicEl) musicEl.volume = 1; // gain node owns loudness
   }
 
   function ensure() {
@@ -52,6 +52,17 @@ const AudioBus = (() => {
     applyGains();
   }
 
+  function ensureMusic() {
+    ensure();
+    if (musicEl) return;
+    // CC0: "Whispers in the Fog" — Ruhinre (OpenGameArt)
+    musicEl = new Audio('sounds/dungeon.ogg');
+    musicEl.loop = true;
+    musicEl.preload = 'auto';
+    const src = ctx.createMediaElementSource(musicEl);
+    src.connect(musicGain);
+  }
+
   function unlock() {
     if (unlocking) return unlocking;
     unlocking = (async () => {
@@ -60,7 +71,7 @@ const AudioBus = (() => {
         try { await ctx.resume(); } catch (_) { /* ignore */ }
       }
       started = true;
-      if (musicPct > 0 && !musicTimer) startMusic();
+      if (musicPct > 0) startMusic();
     })().finally(() => { unlocking = null; });
     return unlocking;
   }
@@ -89,54 +100,26 @@ const AudioBus = (() => {
     window.setTimeout(() => beep(f * 1.5, 0.06, 'triangle', 0.45), 35);
   }
 
-  const PHRASE = [
-    [262, 0.22], [294, 0.22], [330, 0.22], [392, 0.34],
-    [330, 0.22], [294, 0.22], [262, 0.42],
-    [196, 0.22], [220, 0.22], [262, 0.42],
-  ];
-
-  function playPhrase() {
-    if (musicPct <= 0 || !started || !ctx) {
-      musicTimer = null;
-      return;
-    }
-    let t = ctx.currentTime + 0.02;
-    for (const [freq, dur] of PHRASE) {
-      const osc = ctx.createOscillator();
-      const g = ctx.createGain();
-      osc.type = 'triangle';
-      osc.frequency.setValueAtTime(freq, t);
-      g.gain.setValueAtTime(0.0001, t);
-      g.gain.exponentialRampToValueAtTime(0.85, t + 0.03);
-      g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
-      osc.connect(g);
-      g.connect(musicGain);
-      osc.start(t);
-      osc.stop(t + dur + 0.03);
-      t += dur;
-    }
-    const totalMs = PHRASE.reduce((s, [, d]) => s + d, 0) * 1000 + 700;
-    musicTimer = window.setTimeout(playPhrase, totalMs);
-  }
-
   function startMusic() {
-    stopMusic();
     if (musicPct <= 0 || !started) return;
-    playPhrase();
+    ensureMusic();
+    applyGains();
+    const play = musicEl.play();
+    if (play && typeof play.catch === 'function') play.catch(() => {});
   }
 
   function stopMusic() {
-    if (musicTimer) window.clearTimeout(musicTimer);
-    musicTimer = null;
+    if (!musicEl) return;
+    musicEl.pause();
+    try { musicEl.currentTime = 0; } catch (_) { /* ignore */ }
   }
 
   function setMusicVolume(pct) {
-    const prev = musicPct;
     musicPct = Math.max(0, Math.min(100, Number(pct) || 0));
     ensure();
     applyGains();
     if (musicPct <= 0) stopMusic();
-    else if (prev <= 0 || !musicTimer) unlock().then(() => startMusic());
+    else unlock().then(() => startMusic());
   }
 
   function setSfxVolume(pct) {

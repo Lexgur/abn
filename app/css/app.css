@@ -300,28 +300,69 @@ select, .btn {
   background: var(--center);
   border: 4px solid #f0d9a8;
   display: grid;
+  grid-template-rows: 1fr auto;
   place-items: center;
   align-content: center;
   gap: 2px;
+  position: relative;
+  cursor: text;
 }
 
-#number {
+.number-view,
+.number-input {
   width: 90%;
-  border: 0;
-  background: transparent;
   text-align: center;
   font: inherit;
   font-size: clamp(2rem, 4vh, 3rem);
   font-weight: 900;
-  color: var(--ink);
-  outline: none;
+  line-height: 1.1;
+  letter-spacing: 0.02em;
 }
+
+.number-view {
+  z-index: 1;
+  pointer-events: none;
+  user-select: none;
+}
+
+.number-input {
+  position: absolute;
+  inset: 12% 8% auto;
+  height: 55%;
+  border: 0;
+  background: transparent;
+  color: transparent;
+  caret-color: var(--ink);
+  outline: none;
+  z-index: 2;
+}
+
+/* Keep colored digits visible while typing; input stays transparent */
+.center.editing .number-input {
+  color: transparent;
+  caret-color: var(--ink);
+  background: transparent;
+}
+
+/* Place value: U blue, D red, C green (thousands+ also C) */
+.dig-u { color: var(--units); }
+.dig-d { color: var(--tens); }
+.dig-c { color: var(--hundreds); }
+
+.cell .dig-u,
+.cell .dig-d,
+.cell .dig-c { font-weight: 900; }
 
 .center-hint {
   font-size: 0.75rem;
   font-weight: 800;
   color: var(--muted);
+  z-index: 1;
 }
+
+.counter.units .value { color: var(--units); }
+.counter.tens .value { color: var(--tens); }
+.counter.hundreds .value { color: var(--hundreds); }
 
 .counters {
   flex: 0 0 auto;

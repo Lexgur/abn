@@ -58,7 +58,8 @@
           <button type="button" class="arrow up" data-dir="up" title="↑ −10" aria-label="Up">↑</button>
           <button type="button" class="arrow left" data-dir="left" title="← −1" aria-label="Left">←</button>
           <div class="center">
-            <input id="number" type="text" inputmode="numeric" value="1" maxlength="4" autocomplete="off" />
+            <div id="numberView" class="number-view" aria-hidden="false"></div>
+            <input id="number" class="number-input" type="text" inputmode="numeric" value="1" maxlength="4" autocomplete="off" />
             <span class="center-hint" data-i18n="centerHint">Número</span>
           </div>
           <button type="button" class="arrow right" data-dir="right" title="→ +1" aria-label="Right">→</button>

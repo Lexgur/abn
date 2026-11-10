@@ -51,6 +51,8 @@
     pagePrev: document.getElementById('pagePrev'),
     pageNext: document.getElementById('pageNext'),
     number: document.getElementById('number'),
+    numberView: document.getElementById('numberView'),
+    center: document.querySelector('.center'),
     countUnits: document.getElementById('countUnits'),
     countTens: document.getElementById('countTens'),
     countHundreds: document.getElementById('countHundreds'),
@@ -70,6 +72,29 @@
 
   function clamp(n) {
     return Math.min(MAX, Math.max(MIN, n));
+  }
+
+  // U = ones (blue), D = tens (red), C = hundreds+ (green)
+  function placeClass(fromRight) {
+    if (fromRight === 0) return 'dig-u';
+    if (fromRight === 1) return 'dig-d';
+    return 'dig-c';
+  }
+
+  function coloredDigits(n) {
+    const s = String(n);
+    const frag = document.createDocumentFragment();
+    for (let i = 0; i < s.length; i += 1) {
+      const span = document.createElement('span');
+      span.className = placeClass(s.length - 1 - i);
+      span.textContent = s[i];
+      frag.appendChild(span);
+    }
+    return frag;
+  }
+
+  function setColored(el, n) {
+    el.replaceChildren(coloredDigits(n));
   }
 
   function pageStartFor(n) {
@@ -102,15 +127,13 @@
       const btn = document.createElement('button');
       btn.type = 'button';
       btn.className = 'cell';
-      btn.textContent = String(n);
+      setColored(btn, n);
       btn.dataset.n = String(n);
       btn.setAttribute('role', 'gridcell');
       btn.addEventListener('click', () => jumpTo(n));
       els.board.appendChild(btn);
       cells.set(n, btn);
     }
-
-    // Keep a fixed 10x10 grid even on 901–1000 (100 cells). 901–1000 is exactly 100.
   }
 
   function ensurePage(n, force = false) {
@@ -143,11 +166,16 @@
     fillTokens(els.tokensHundreds, state.hundreds);
   }
 
-  function render(from) {
-    ensurePage(state.value);
+  function renderCenter() {
+    setColored(els.numberView, state.value);
     if (document.activeElement !== els.number) {
       els.number.value = String(state.value);
     }
+  }
+
+  function render(from) {
+    ensurePage(state.value);
+    renderCenter();
     renderCounts();
     paintBoard(from);
     els.pagePrev.disabled = state.pageStart <= 1;
@@ -170,7 +198,7 @@
         if (parent) parent.title = strings[key];
       }
     });
-    document.title = strings.title || 'ABN Tabla';
+    document.title = strings.title || 'ABN';
     syncVolumeUI();
   }
 
@@ -284,7 +312,18 @@
   });
 
   els.number.addEventListener('change', commitInput);
-  els.number.addEventListener('blur', commitInput);
+  els.number.addEventListener('focus', () => {
+    els.center.classList.add('editing');
+  });
+  els.number.addEventListener('blur', () => {
+    els.center.classList.remove('editing');
+    commitInput();
+    renderCenter();
+  });
+  els.number.addEventListener('input', () => {
+    const raw = els.number.value.trim().replace(/[^\d]/g, '') || '0';
+    setColored(els.numberView, raw);
+  });
   els.reset.addEventListener('click', resetCounters);
 
   els.pageHome.addEventListener('click', () => {
